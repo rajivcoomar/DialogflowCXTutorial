@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Timeout</title>
+  
+<script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
+<df-messenger
+  project-id="scratchit"
+  agent-id="4dfac68d-e1cf-45ba-9a77-3da266fe5055"
+  intent="WELCOME"
+  language-code="en"
+  storage-option="none"
+  >
+  <df-messenger-chat-bubble
+   chat-title="ReadTheManual">
+  </df-messenger-chat-bubble>
+  
+</df-messenger>
+<style>
+  df-messenger {
+    z-index: 999;
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+  }
+</style>
+
+<script>
+ 
+
+  let userInputReceived = false; // Flag to track user input
+  let timeoutID;
+  document.addEventListener('df-response-received', (event) => {
+	
+   userInputReceived = false; // Set the flag when user input is received
+   timeoutID = setTimeout(checkUserInput, timeoutDelay);
+  });
+
+ 
+  
+  document.addEventListener('df-user-input-entered', (event) => {
+ 
+	const userInput = event.detail.input;
+	
+	userInputReceived = true; // Set the flag when user input is received
+  });
+  
+  
+  
+   // Set a timeout to check if user input is received within 3 seconds
+  const timeoutDelay = 10000; // 10 seconds in milliseconds
+  
+
+  function checkUserInput() {
+    if (!userInputReceived) {
+      // Generate an alert if user input is not received in 3 seconds
+		const dfMessenger = document.querySelector('df-messenger');
+	
+		dfMessenger.sendRequest('event', 'TIMEOUT');	
+    } else {
+      // Reset the flag and set a new timeout
+      userInputReceived = false;
+      timeoutID = setTimeout(checkUserInput, timeoutDelay);
+    }
+  }
+
+ 
+</script>
+</body>
+</html>
